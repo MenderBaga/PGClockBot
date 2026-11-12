@@ -41,7 +41,9 @@ from app.services.panel_brand import load_own_values
 from app.services.settings_tab_groups import group_settings_tabs, resolve_merged_tab, tabs_with_message_variables
 from app.services.rich_text import merge_rich_settings_on_save, prepare_settings_values_for_web
 from app.services.screen_titles import SCREEN_TEXT_TAB, platform_only_screen_text_keys, validate_screen_text_settings
+from app.services.custom_service_name import SETTING_KEY as CUSTOM_SERVICE_NAME_KEY
 from app.services.users import (
+    CUSTOM_SERVICE_NAME_GROUP,
     IMAGE_KEYS,
     RESETTABLE_SETTINGS_TABS,
     SECRET_KEYS,
@@ -237,6 +239,8 @@ def register_shop_settings(app, *, render, require_staff, get_db, require_shop_s
         groups = {name: SETTING_GROUPS[name] for name in tab_groups if name in SETTING_GROUPS}
         if tab == "service_import":
             groups.pop("مسیرها و ادمین‌های مجاز", None)
+        # A shop's name step follows its permission, set on its representative page.
+        groups.pop(CUSTOM_SERVICE_NAME_GROUP, None)
         if tab == "menu":
             for name, fields in list(groups.items()):
                 groups[name] = [f for f in fields if f[0] != "show_reseller_apply"]
@@ -446,7 +450,7 @@ def register_shop_settings(app, *, render, require_staff, get_db, require_shop_s
         from app.services.service_import_config import PLATFORM_ONLY_KEYS
 
         # Subscription paths and extra panel admins describe the one panel: Owner only.
-        known = keys_for_tab(tab) - PLATFORM_ONLY_KEYS - PLATFORM_ONLY_BTN_KEYS
+        known = keys_for_tab(tab) - PLATFORM_ONLY_KEYS - PLATFORM_ONLY_BTN_KEYS - {CUSTOM_SERVICE_NAME_KEY}
         if tab == "menu":
             known = known | {"menu_order"}
             known.discard("show_reseller_apply")

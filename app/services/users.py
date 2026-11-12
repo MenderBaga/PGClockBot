@@ -1274,6 +1274,10 @@ SETTING_VISIBILITY: dict[str, tuple[str, tuple[str, ...]]] = {
     "crypto_rate_api_divisor": ("crypto_rate_mode", ("api",)),
 }
 
+# The platform bot's switch for the buyer-named service step. A shop's step follows its
+# ``custom_service_name`` permission instead, so shop settings never show this group.
+CUSTOM_SERVICE_NAME_GROUP = "نام دلخواه سرویس"
+
 SETTING_GROUPS = {
     "خوش‌آمد و هویت": [
         ("shop_title", "نام فروشگاه", "text", "بالای منوی اصلی ربات دیده می‌شود"),
@@ -1875,6 +1879,14 @@ SETTING_GROUPS = {
             "نام دلخواه خریدار جای {random} می‌نشیند (بدون {random}: الگوی پیش‌فرض).",
         ),
     ],
+    CUSTOM_SERVICE_NAME_GROUP: [
+        (
+            "custom_service_name_enabled",
+            "نام دلخواه سرویس هنگام خرید",
+            "toggle",
+            "بعد از انتخاب پلن، خریدار نام سرویس را می‌فرستد یا «🎲 اسم تصادفی» را می‌زند؛ نام جای {random} در الگوی بالا می‌نشیند.",
+        ),
+    ],
     "کانال اجباری": [
         ("force_join_enabled", "عضویت اجباری کانال", "toggle", "قبل از استفاده از ربات"),
         (
@@ -2038,7 +2050,7 @@ TAB_SETTING_GROUPS: dict[str, list[str]] = {
     ],
     "supports": ["متن پشتیبانی ربات"],
     "loyalty": ["متن دعوت دوستان"],
-    "naming": ["نام‌گذاری سرویس در پاسارگارد"],
+    "naming": ["نام‌گذاری سرویس در پاسارگارد", CUSTOM_SERVICE_NAME_GROUP],
     "limits": [
         "معرف اجباری",
         "شماره تماس خرید",
