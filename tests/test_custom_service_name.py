@@ -13,6 +13,7 @@ from app.db.models import BotUser, Order, OrderStatus, Plan, ResellerProfile, Us
 from app.services import custom_service_name as naming
 from app.services.orders import create_with_name_fallback, deliver_order, generate_pg_username
 from app.services.pasarguard import PasarGuardError
+from app.services.resellers import feature_perm_groups
 
 ENABLED = {naming.SETTING_KEY: "1"}
 
@@ -30,6 +31,11 @@ class NameRulesTests(unittest.TestCase):
         for _ in range(20):
             name = naming.random_service_name()
             self.assertEqual(naming.normalize_service_name(name), name)
+
+    def test_the_shop_permission_does_not_call_the_step_mandatory(self) -> None:
+        # The step always offers «🎲 اسم تصادفی», so the buyer never has to type a name.
+        labels = {perm.key: perm.label for group in feature_perm_groups() for perm in group.perms}
+        self.assertEqual(labels[naming.PERMISSION], "نام دلخواه سرویس هنگام خرید")
 
 
 class NamingPatternTests(unittest.IsolatedAsyncioTestCase):
